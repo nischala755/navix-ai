@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Lightbulb, TrendingUp, AlertTriangle, CheckCircle, Info } from 'lucide-react'
-import { explainRoute, ExplainResponse } from '../services/api'
+import { explainRoute } from '../services/api'
+import type { ExplainResponse } from '../services/api'
 
 export default function Explain() {
     const { routeId } = useParams<{ routeId: string }>()

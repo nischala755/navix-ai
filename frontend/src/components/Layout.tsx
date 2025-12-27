@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Ship, Map, BarChart3, Settings, Home, Compass } from 'lucide-react'
+import { Ship, BarChart3, Settings, Home, Compass } from 'lucide-react'
 
 const navItems = [
     { path: '/', icon: Home, label: 'Home' },
@@ -38,8 +38,8 @@ export default function Layout() {
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.95 }}
                                     className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${isActive
-                                            ? 'bg-cyan-500/20 text-cyan-400 glow-cyan'
-                                            : 'text-gray-400 hover:text-cyan-400 hover:bg-white/5'
+                                        ? 'bg-cyan-500/20 text-cyan-400 glow-cyan'
+                                        : 'text-gray-400 hover:text-cyan-400 hover:bg-white/5'
                                         }`}
                                 >
                                     <Icon className="w-5 h-5" />

@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { CheckCircle, XCircle, Loader2, ArrowRight, Zap } from 'lucide-react'
-import { getJobStatus, JobStatus } from '../services/api'
+import { getJobStatus } from '../services/api'
+import type { JobStatus } from '../services/api'
 
 export default function LiveOptimization() {
     const { jobId } = useParams<{ jobId: string }>()

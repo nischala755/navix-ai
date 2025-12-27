@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Anchor, Ship, Play, Settings2, Fuel, Clock, Shield, Leaf, Compass } from 'lucide-react'
-import { optimizeRoute, ObjectiveWeights } from '../services/api'
+import { Anchor, Play, Settings2, Fuel, Clock, Shield, Leaf, Compass } from 'lucide-react'
+import { optimizeRoute } from '../services/api'
+import type { ObjectiveWeights } from '../services/api'
 import MapView from '../components/MapView'
 
 const PORTS = [
@@ -236,8 +237,8 @@ export default function Optimizer() {
                                         key={alg}
                                         onClick={() => setAlgorithm(alg)}
                                         className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${algorithm === alg
-                                                ? 'bg-cyan-500 text-white'
-                                                : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                            ? 'bg-cyan-500 text-white'
+                                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                             }`}
                                     >
                                         {alg.toUpperCase()}

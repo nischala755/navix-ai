@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { Ship, Fuel, Clock, Leaf, Shield, Eye, ArrowLeft } from 'lucide-react'
-import { getRoutes, RouteSolution } from '../services/api'
+import { getRoutes } from '../services/api'
+import type { RouteSolution } from '../services/api'
 import MapView from '../components/MapView'
 
 const COLORS = ['#00d4ff', '#00ffc8', '#ffd700', '#ff6b6b', '#a855f7']
@@ -153,8 +154,8 @@ export default function ParetoExplorer() {
                                     whileHover={{ scale: 1.02 }}
                                     onClick={() => setSelected(route)}
                                     className={`w-full p-4 rounded-xl text-left transition-all ${selected?.route_id === route.route_id
-                                            ? 'bg-cyan-500/20 border border-cyan-500/40'
-                                            : 'bg-white/5 hover:bg-white/10 border border-transparent'
+                                        ? 'bg-cyan-500/20 border border-cyan-500/40'
+                                        : 'bg-white/5 hover:bg-white/10 border border-transparent'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between mb-2">
