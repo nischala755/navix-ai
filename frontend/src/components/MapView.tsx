@@ -17,11 +17,40 @@ interface MapViewProps {
     destination: Port
     ports: Port[]
     route?: number[][]
+    showPreviewLine?: boolean
     onSelectOrigin?: (port: Port) => void
     onSelectDestination?: (port: Port) => void
 }
 
-export default function MapView({ origin, destination, ports, route }: MapViewProps) {
+// Generate great circle points between two coordinates
+function generateGreatCircle(start: [number, number], end: [number, number], numPoints = 50): number[][] {
+    const points: number[][] = []
+
+    for (let i = 0; i <= numPoints; i++) {
+        const t = i / numPoints
+        // Simple linear interpolation for now (works for most routes)
+        // For very long routes, you'd want proper great circle math
+        let lng = start[0] + t * (end[0] - start[0])
+        const lat = start[1] + t * (end[1] - start[1])
+
+        // Handle crossing the antimeridian
+        if (Math.abs(end[0] - start[0]) > 180) {
+            if (end[0] > start[0]) {
+                lng = start[0] + t * (end[0] - 360 - start[0])
+                if (lng < -180) lng += 360
+            } else {
+                lng = start[0] + t * (end[0] + 360 - start[0])
+                if (lng > 180) lng -= 360
+            }
+        }
+
+        points.push([lng, lat])
+    }
+
+    return points
+}
+
+export default function MapView({ origin, destination, ports, route, showPreviewLine = true }: MapViewProps) {
     const mapContainer = useRef<HTMLDivElement>(null)
     const map = useRef<mapboxgl.Map | null>(null)
     const [mapLoaded, setMapLoaded] = useState(false)
@@ -46,7 +75,7 @@ export default function MapView({ origin, destination, ports, route }: MapViewPr
         }
     }, [])
 
-    // Add port markers
+    // Add port markers and preview line
     useEffect(() => {
         if (!map.current || !mapLoaded) return
 
@@ -105,20 +134,75 @@ export default function MapView({ origin, destination, ports, route }: MapViewPr
                 .addTo(map.current!)
         })
 
+        // Add preview line between origin and destination
+        if (showPreviewLine && !route) {
+            const previewSourceId = 'preview-route'
+
+            // Remove existing preview
+            if (map.current.getLayer('preview-line')) {
+                map.current.removeLayer('preview-line')
+            }
+            if (map.current.getSource(previewSourceId)) {
+                map.current.removeSource(previewSourceId)
+            }
+
+            // Generate curved path
+            const previewPath = generateGreatCircle(
+                [origin.lng, origin.lat],
+                [destination.lng, destination.lat]
+            )
+
+            map.current.addSource(previewSourceId, {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: previewPath,
+                    },
+                },
+            })
+
+            map.current.addLayer({
+                id: 'preview-line',
+                type: 'line',
+                source: previewSourceId,
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round',
+                },
+                paint: {
+                    'line-color': '#00d4ff',
+                    'line-width': 2,
+                    'line-opacity': 0.5,
+                    'line-dasharray': [4, 4],
+                },
+            })
+        }
+
         // Fit bounds
         const bounds = new mapboxgl.LngLatBounds()
         bounds.extend([origin.lng, origin.lat])
         bounds.extend([destination.lng, destination.lat])
         map.current.fitBounds(bounds, { padding: 100, duration: 1000 })
-    }, [origin, destination, ports, mapLoaded])
+    }, [origin, destination, ports, mapLoaded, showPreviewLine, route])
 
-    // Draw route
+    // Draw optimized route
     useEffect(() => {
         if (!map.current || !mapLoaded || !route) return
 
         const sourceId = 'route'
 
-        // Remove existing
+        // Remove preview line when we have a real route
+        if (map.current.getLayer('preview-line')) {
+            map.current.removeLayer('preview-line')
+        }
+        if (map.current.getSource('preview-route')) {
+            map.current.removeSource('preview-route')
+        }
+
+        // Remove existing route
         if (map.current.getLayer('route-line')) {
             map.current.removeLayer('route-line')
         }
@@ -126,7 +210,7 @@ export default function MapView({ origin, destination, ports, route }: MapViewPr
             map.current.removeSource(sourceId)
         }
 
-        // Add route
+        // Add optimized route
         map.current.addSource(sourceId, {
             type: 'geojson',
             data: {
@@ -148,9 +232,9 @@ export default function MapView({ origin, destination, ports, route }: MapViewPr
                 'line-cap': 'round',
             },
             paint: {
-                'line-color': '#00d4ff',
-                'line-width': 3,
-                'line-opacity': 0.8,
+                'line-color': '#00ffc8',
+                'line-width': 4,
+                'line-opacity': 0.9,
             },
         })
     }, [route, mapLoaded])
