@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  navix-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: navix-ai-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - DATABASE_URL=sqlite+aiosqlite:///./data/navix.db
+    volumes:
+      - navix-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional: nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: navix-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - navix-api
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  navix-data:
+    driver: local
