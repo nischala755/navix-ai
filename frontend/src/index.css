@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+:root {
+  --ocean-dark: #0a1628;
+  --ocean-deep: #0d1f3c;
+  --ocean-mid: #1a3a5c;
+  --ocean-light: #2d5a87;
+  --accent-cyan: #00d4ff;
+  --accent-teal: #00ffc8;
+  --accent-gold: #ffd700;
+  --glass-bg: rgba(13, 31, 60, 0.7);
+  --glass-border: rgba(0, 212, 255, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(180deg, var(--ocean-dark) 0%, var(--ocean-deep) 50%, #0a1a30 100%);
+  color: #e0f0ff;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+
+.glass-dark {
+  background: rgba(10, 22, 40, 0.85);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(0, 212, 255, 0.15);
+}
+
+/* Glow effects */
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), 0 0 40px rgba(0, 212, 255, 0.1);
+}
+
+.glow-text {
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #00d4ff, #00ffc8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ocean-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ocean-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes wave {
+  0% { transform: translateX(0) translateZ(0) scaleY(1); }
+  50% { transform: translateX(-25%) translateZ(0) scaleY(0.8); }
+  100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Mapbox overrides */
+.mapboxgl-map {
+  font-family: inherit;
+}
+
+.mapboxgl-ctrl-logo {
+  display: none !important;
+}
+
+/* Custom range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-track {
+  height: 6px;
+  background: var(--ocean-mid);
+  border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  margin-top: -6px;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: var(--ocean-mid);
+  border-radius: 3px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  border: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
