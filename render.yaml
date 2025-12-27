@@ -5,10 +5,10 @@ services:
   - type: web
     name: navix-ai-api
     runtime: python
-    region: oregon  # or singapore for APAC
-    plan: free  # or starter, standard for production
+    region: oregon
+    plan: free
     buildCommand: pip install -r requirements.txt && python -m data.seed
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    startCommand: gunicorn app.main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
     envVars:
       - key: ENVIRONMENT
         value: production
