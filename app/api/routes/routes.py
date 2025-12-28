@@ -1,6 +1,7 @@
 """Routes endpoints."""
 
 import json
+from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -65,6 +66,14 @@ async def get_routes_for_job(
             },
         }
 
+        # Calculate estimated arrival time
+        estimated_arrival = None
+        if job.departure_time and route.travel_time:
+            estimated_arrival = job.departure_time + timedelta(hours=route.travel_time)
+        
+        # Calculate fuel cost (approximate marine fuel price: ~$600/tonne)
+        fuel_cost_usd = route.fuel_consumption * 600 if route.fuel_consumption else None
+
         route_responses.append(RouteSolutionResponse(
             route_id=route.id,
             job_id=job_id,
@@ -75,6 +84,8 @@ async def get_routes_for_job(
                 risk_score=route.risk_score,
                 co2_emissions_tonnes=route.co2_emissions,
                 comfort_score=route.comfort_score,
+                fuel_cost_usd=fuel_cost_usd,
+                estimated_arrival=estimated_arrival,
             ),
             total_distance_nm=route.total_distance_nm,
             waypoint_count=route.waypoint_count,
@@ -141,6 +152,7 @@ async def get_single_route(
             risk_score=route.risk_score,
             co2_emissions_tonnes=route.co2_emissions,
             comfort_score=route.comfort_score,
+            fuel_cost_usd=route.fuel_consumption * 600 if route.fuel_consumption else None,
         ),
         total_distance_nm=route.total_distance_nm,
         waypoint_count=route.waypoint_count,

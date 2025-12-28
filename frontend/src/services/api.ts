@@ -59,6 +59,8 @@ export interface ObjectiveValues {
     risk_score: number;
     co2_emissions_tonnes: number;
     comfort_score: number;
+    fuel_cost_usd?: number;
+    estimated_arrival?: string;
 }
 
 export interface RouteSolution {

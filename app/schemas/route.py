@@ -22,6 +22,8 @@ class ObjectiveValuesResponse(BaseModel):
     risk_score: float
     co2_emissions_tonnes: float
     comfort_score: float
+    fuel_cost_usd: float | None = None
+    estimated_arrival: datetime | None = None
 
 
 class ComparisonResponse(BaseModel):

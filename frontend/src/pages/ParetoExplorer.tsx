@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
-import { Ship, Fuel, Clock, Leaf, Shield, Eye, ArrowLeft } from 'lucide-react'
+import { Ship, Fuel, Clock, Leaf, Shield, Eye, ArrowLeft, DollarSign, Calendar } from 'lucide-react'
 import { getRoutes } from '../services/api'
 import type { RouteSolution } from '../services/api'
 import MapView from '../components/MapView'
@@ -219,7 +219,7 @@ export default function ParetoExplorer() {
                                 </button>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div className="p-4 rounded-xl bg-white/5">
                                     <div className="flex items-center gap-2 text-gray-400 text-sm mb-1">
                                         <Ship className="w-4 h-4" />
@@ -261,6 +261,28 @@ export default function ParetoExplorer() {
                                         Waypoints
                                     </div>
                                     <div className="text-xl font-semibold">{selected.waypoint_count}</div>
+                                </div>
+                                {/* Fuel Cost */}
+                                <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20">
+                                    <div className="flex items-center gap-2 text-amber-400 text-sm mb-1">
+                                        <DollarSign className="w-4 h-4" />
+                                        Fuel Cost
+                                    </div>
+                                    <div className="text-xl font-semibold text-amber-300">
+                                        ${selected.objectives.fuel_cost_usd ? selected.objectives.fuel_cost_usd.toLocaleString(undefined, { maximumFractionDigits: 0 }) : 'N/A'}
+                                    </div>
+                                </div>
+                                {/* ETA */}
+                                <div className="p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-teal-500/10 border border-cyan-500/20">
+                                    <div className="flex items-center gap-2 text-cyan-400 text-sm mb-1">
+                                        <Calendar className="w-4 h-4" />
+                                        Est. Arrival
+                                    </div>
+                                    <div className="text-lg font-semibold text-cyan-300">
+                                        {selected.objectives.estimated_arrival
+                                            ? new Date(selected.objectives.estimated_arrival).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                                            : 'N/A'}
+                                    </div>
                                 </div>
                             </div>
                         </div>
